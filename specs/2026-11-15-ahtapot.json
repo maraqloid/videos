@@ -1,0 +1,14 @@
+{
+  "title": "Ahtapotun 3 ürəyi var",
+  "palette": [[8, 30, 80], [10, 110, 140]],
+  "scenes": [
+    {"text": "Bilirdinizmi? Ahtapotun üç ürəyi var.", "emoji": ["🐙", "❤️", "❤️", "❤️"], "big": "3 ÜRƏK"},
+    {"text": "Və onun qanı qırmızı deyil, mavidir!", "emoji": ["🩸", "💙"], "big": "MAVİ QAN", "palette": [[10, 20, 70], [40, 80, 200]]},
+    {"text": "İki ürək qanı qəlsəmələrə vurur, üçüncüsü isə bütün bədənə.", "emoji": ["❤️", "🫁", "🐙"], "big": "2 + 1"},
+    {"text": "Mavi rəngin səbəbi misdir. Bizim qanımızda dəmir var, onlarınkında isə mis.", "emoji": ["🧪", "🔵", "🔴"], "big": "MİS vs DƏMİR", "palette": [[40, 20, 80], [20, 90, 150]]},
+    {"text": "Ən maraqlısı: ahtapot üzəndə əsas ürəyi dayanır.", "emoji": ["💔", "🌊"], "big": "ÜRƏK DAYANIR", "palette": [[60, 10, 40], [20, 40, 120]]},
+    {"text": "Buna görə də onlar üzməkdənsə, dənizin dibində sürünməyi sevirlər.", "emoji": ["🐙", "🪸", "🐚"], "big": "SÜRÜNMƏK"},
+    {"text": "Üstəlik, neyronlarının üçdə ikisi qollarındadır. Yəni hər qol az qala öz başına düşünür!", "emoji": ["🧠", "🐙", "💭"], "big": "8 QOL = 8 BEYİN?", "palette": [[50, 10, 90], [140, 40, 120]]},
+    {"text": "Daha çox maraqlı fakt üçün Maraqloidə abunə olun!", "emoji": ["🔔", "⭐", "👍"], "big": "ABUNƏ OL!", "palette": [[90, 20, 60], [200, 60, 60]]}
+  ]
+}
