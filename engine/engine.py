@@ -25,17 +25,75 @@ def font(path, size):
     return _font_cache[k]
 
 _emoji_cache = {}
+_svg_sprite = None
+
+def _load_svg_sprite():
+    """Vector Noto emoji (MIT, @svgmoji/noto). Downloaded once via npm into ~/.cache."""
+    global _svg_sprite
+    if _svg_sprite is not None:
+        return _svg_sprite
+    _svg_sprite = {}
+    cache = os.path.expanduser("~/.cache/maraqloid/noto-sprite.svg")
+    try:
+        if not os.path.exists(cache):
+            import tempfile, tarfile, glob
+            os.makedirs(os.path.dirname(cache), exist_ok=True)
+            td = tempfile.mkdtemp()
+            subprocess.run(["npm", "pack", "@svgmoji/noto@3.2.0", "-q"], cwd=td, check=True, capture_output=True)
+            tgz = glob.glob(os.path.join(td, "*.tgz"))[0]
+            with tarfile.open(tgz) as tf:
+                data = tf.extractfile("package/sprites/all.svg").read()
+            open(cache, "wb").write(data)
+        txt = open(cache, encoding="utf-8").read()
+        for m in re.finditer(r'<svg [^>]*?\bid="([0-9A-F]{2,}(?:-[0-9A-F]+)*)"', txt):
+            st = m.start()
+            en = txt.find("</svg>", st)
+            # nested <svg> never occurs inside an emoji entry; take up to its closing tag
+            _svg_sprite[m.group(1)] = txt[st:en + 6]
+    except Exception as e:
+        print("vector emoji unavailable, falling back to bitmap:", e, file=sys.stderr)
+    return _svg_sprite
+
+def _emoji_svg_png(ch, px):
+    sp = _load_svg_sprite()
+    if not sp:
+        return None
+    cps = [f"{ord(c):04X}" for c in ch]
+    keys = ["-".join(cps), "-".join(c for c in cps if c != "FE0F")]
+    keys.append(keys[1] + "-FE0F")
+    svg = next((sp[k] for k in keys if k in sp), None)
+    if svg is None:
+        return None
+    import cairosvg, io
+    svg = svg.replace("<svg ", '<svg xmlns:xlink="http://www.w3.org/1999/xlink" ', 1) if "xmlns:xlink" not in svg else svg
+    png = cairosvg.svg2png(bytestring=svg.encode(), output_width=px, output_height=px)
+    return Image.open(io.BytesIO(png)).convert("RGBA")
+
 def emoji_img(ch, size):
     k = (ch, size)
     if k in _emoji_cache:
         return _emoji_cache[k]
-    f = ImageFont.truetype(F_EMOJI, 109)  # only bitmap size available
-    im = Image.new("RGBA", (160, 160), (0, 0, 0, 0))
-    ImageDraw.Draw(im).text((80, 80), ch, font=f, embedded_color=True, anchor="mm")
-    bb = im.getbbox() or (0, 0, 160, 160)
-    im = im.crop(bb)
-    s = size / max(im.size)
-    im = im.resize((max(1, int(im.width * s)), max(1, int(im.height * s))), Image.LANCZOS)
+    im = None
+    base = _emoji_cache.get((ch, "hires"))
+    if base is None:
+        base = _emoji_svg_png(ch, 1024)
+        if base is not None:
+            bb = base.getbbox()
+            base = base.crop(bb) if bb else base
+            _emoji_cache[(ch, "hires")] = base
+    if base is None:
+        f = ImageFont.truetype(F_EMOJI, 109)  # bitmap fallback
+        base = Image.new("RGBA", (160, 160), (0, 0, 0, 0))
+        ImageDraw.Draw(base).text((80, 80), ch, font=f, embedded_color=True, anchor="mm")
+        bb = base.getbbox() or (0, 0, 160, 160)
+        base = base.crop(bb)
+        print(f"WARNING: no vector emoji for {ch!r}, using low-res bitmap; replace this emoji", file=sys.stderr)
+        _emoji_cache[(ch, "hires")] = base
+    s = size / max(base.size)
+    im = base.resize((max(1, int(base.width * s)), max(1, int(base.height * s))), Image.LANCZOS)
+    if len(_emoji_cache) > 400:
+        for kk in [kk for kk in _emoji_cache if kk[1] != "hires"][:200]:
+            _emoji_cache.pop(kk, None)
     _emoji_cache[k] = im
     return im
 
@@ -204,7 +262,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
     n = int(round(dur * FPS))
     tmp = out_path + ".tmp.mp4"
     p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
-                          "-i", "pipe:0", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", tmp],
+                          "-i", "pipe:0", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", tmp],
                          stdin=subprocess.PIPE)
     emojis = sc.get("emoji", [])
     big = sc.get("big", "")

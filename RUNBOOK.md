@@ -32,12 +32,13 @@ Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oran�
 
 ## Üretim
 ```bash
-pip install --break-system-packages -q espeakng-loader numpy pillow
+pip install --break-system-packages -q espeakng-loader numpy pillow cairosvg
 MQ_ELEVEN_KEY=<anahtar> MQ_ELEVEN_VOICE=BQgh92MxG7QAtCA8wY7O \
   python3 engine/engine.py specs/<dosya>.json /tmp/render/<dosya>.mp4
 ```
 Çıktı JSON'unda `"tts": ["elevenlabs"]` olmalı. `espeak` çıktıysa (robotik ses) YAYINLAMA; kullanıcıya bildir.
 Render ~4 dk sürer; arka planda çalıştırıp bitmesini bekle.
+Emojiler vektör Noto setinden (npm @svgmoji/noto, ilk çalıştırmada indirilir) keskin çizilir. Log'da `WARNING: no vector emoji` görürsen o emojiyi başka bir emojiyle değiştirip yeniden render et (düşük çözünürlüklü görünür).
 
 ## Yayın (Buffer)
 - Organizasyon: "My organization" `6af8c4c7bfa2116d7effa63d`
