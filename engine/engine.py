@@ -218,7 +218,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
         bg = Image.alpha_composite(bg, ov)
         # main emoji
         if emojis:
-            e_in = clamp(t / 0.45)
+            e_in = 1.0 if sc.get("_first") else clamp(t / 0.45)
             sc_ = ease_out_back(e_in) if e_in < 1 else 1 + 0.04 * math.sin(t * 3)
             size = int(520 * max(0.01, sc_))
             em = emoji_img(emojis[0], size).rotate(6 * math.sin(t * 1.5), resample=Image.BICUBIC, expand=True)
@@ -232,7 +232,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
             bg.alpha_composite(em, (cx - em.width // 2, cy - em.height // 2))
             # orbiting secondary emojis
             for k, ch in enumerate(emojis[1:]):
-                a_in = clamp((t - 0.35 - 0.15 * k) / 0.4)
+                a_in = 1.0 if sc.get("_first") else clamp((t - 0.35 - 0.15 * k) / 0.4)
                 if a_in <= 0: continue
                 ang = tg * 0.9 + k * (2 * math.pi / max(1, len(emojis) - 1))
                 rx, ry = 390, 230
@@ -244,7 +244,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
         d = ImageDraw.Draw(bg)
         # big keyword
         if big:
-            b_in = clamp((t - 0.15) / 0.4)
+            b_in = 1.0 if sc.get("_first") else clamp((t - 0.15) / 0.4)
             if b_in > 0:
                 fb = font(F_BOLD, 150)
                 lines = wrap(big, fb, W - 120, d)
@@ -273,12 +273,9 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
                                 fill=(10, 8, 30, 150))
             for li, ln in enumerate(lines):
                 draw_text_outlined(d, (W // 2, y0 + li * 104 + (1 - pop) * 30), ln, fc, (255, 255, 255, 255), stroke=8)
-        # brand + progress
+        # brand (no progress bar: showing remaining length invites swipes)
         fbr = font(F_SEMI, 44)
-        d.text((W // 2, 110), "MARAQLOID", font=fbr, fill=(255, 255, 255, 220), anchor="mm")
-        prog = (t0_global + t) / dur_total
-        d.rounded_rectangle([80, 160, W - 80, 170], radius=5, fill=(255, 255, 255, 60))
-        d.rounded_rectangle([80, 160, 80 + (W - 160) * prog, 170], radius=5, fill=(255, 222, 60, 255))
+        d.text((W // 2, 130), "MARAQLOID", font=fbr, fill=(255, 255, 255, 220), anchor="mm")
         # fade in/out at scene edges (soft flash)
         img = bg.convert("RGB")
         if t < 0.12 and idx > 0:
@@ -297,8 +294,9 @@ def build(spec_path, out):
     scenes = spec["scenes"]
     voice_parts, engine_used = [], set()
     gap = np.zeros(int(0.12 * SR), np.float32)
-    lead = 0.25
-    for sc in scenes:
+    for si, sc in enumerate(scenes):
+        sc["_first"] = si == 0
+        lead = 0.0 if si == 0 else 0.1
         if os.environ.get("MQ_ELEVEN_KEY"):
             a, chars = tts_aligned(sc["text"]); engine_used.add("elevenlabs")
             sp = float(os.environ.get("MQ_SPEED", "1.3"))
@@ -308,7 +306,11 @@ def build(spec_path, out):
                 chars = [(c, s0 / sp, e0 / sp) for c, s0, e0 in chars]
             sc["chunks"] = [{"text": c["text"], "s": c["s"] + lead, "e": c["e"] + lead} for c in chunk_times(sc["text"], chars)]
             idx = np.where(np.abs(a) > 0.01)[0]
-            a = a[: idx[-1] + 2400] if len(idx) else a
+            if len(idx):
+                st = max(0, idx[0] - 240)  # trim leading silence so speech starts at once
+                a = a[st: idx[-1] + 2400]
+                for c in sc["chunks"]:
+                    c["s"] = max(lead, c["s"] - st / SR); c["e"] = max(c["s"] + 0.1, c["e"] - st / SR)
             audio = [np.zeros(int(lead * SR), np.float32), a]
         else:
             sc["chunks"] = []
@@ -320,7 +322,7 @@ def build(spec_path, out):
                 sc["chunks"].append({"text": ch, "s": t, "e": t + len(a) / SR})
                 audio += [a, gap]
                 t += len(a) / SR + len(gap) / SR
-        audio.append(np.zeros(int(0.3 * SR), np.float32))
+        audio.append(np.zeros(int(0.15 * SR), np.float32))
         sc["audio"] = np.concatenate(audio)
         sc["dur"] = round(len(sc["audio"]) / SR * FPS) / FPS
         voice_parts.append(sc["audio"][: int(sc["dur"] * SR)])

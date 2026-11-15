@@ -15,13 +15,20 @@ Bu depo @maraqloid (YouTube Shorts + Instagram Reels) için günlük videoları 
  "scenes": [{"text": "Seslendirilen ve altyazı olan cümle.", "emoji": ["🐙","❤️"], "big": "3 ÜRƏK",
              "palette": [[r,g,b],[r,g,b]]}]}
 ```
-- 5–8 sahne, toplam 25–40 sn. İlk sahne "Bilirdinizmi? ..." gibi bir kanca; son sahne her zaman:
-  `{"text": "Daha çox maraqlı fakt üçün Maraqloidə abunə olun!", "emoji": ["🔔","⭐","👍"], "big": "ABUNƏ OL!", "palette": [[90,20,60],[200,60,60]]}`
-- Dil: Azerbaycan Türkçesi (Latin alfabesi), doğru dilbilgisi. Sayıları seslendirme metninde yazıyla yaz ("iki yüz qırx üç"); `big` alanında rakam kullanılabilir.
-- `big` en fazla ~16 karakter, BÜYÜK HARF (Azerbaycanca İ/I kurallarıyla).
-- `emoji`: ilk emoji büyük ana görsel, diğerleri etrafında döner. Üzerinde yazı olan emojileri kullanma (📅 "July 17" gösterir, 🆒 🆕 gibi İngilizce yazılılar da olmaz).
-- Konular dönüşümlü: bilim, tarih, teknoloji, doğa/hayvanlar, uzay, insan vücudu, coğrafya.
-- Doğruluk şart: yalnızca iyi bilinen, doğrulanabilir bilgiler. Emin değilsen web'de doğrula; şüpheli "internet efsanelerini" kullanma.
+
+## Erişim ve etkileşim kuralları (her videoda uygula)
+Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oranına bakar. Her şey buna göre:
+
+1. **İlk saniye kanca:** 1. sahnenin cümlesi doğrudan en şaşırtıcı bilgiyle başlar (en fazla ~8 kelime). "Bilirdinizmi?", "Salam", "Bu gün" gibi dolgu girişler YASAK. 1. sahnenin `big` metni kancayı 2–3 kelimeyle özetler (ilk karede ekranda olur, sessiz izleyen de anlar).
+2. **Kısa ve tek fikir:** 4–6 sahne, toplam 15–30 sn. Tek bir konu; her sahne bir öncekinden daha şaşırtıcı ya da somut olsun. Gereksiz tekrar cümlesi yok.
+3. **Merak boşluğu:** Mümkünse 1. ya da 2. sahnede açık bir soru bırak, cevabı sonda ver ("Ama asıl ilginci başka..." gibi). Vaat ettiğini mutlaka ver, yanıltıcı kanca yok.
+4. **Ayrı "abunə ol" sahnesi YOK:** İnsanlar orada geçiyor. Son sahne = son şaşırtıcı bilgi + yorumu tetikleyen kısa soru, ör. "Sən bunu bilirdin? Şərhdə yaz!" / "Sənin fikrin nədir: ... yoxsa ...?". `big`: kısa soru (ör. "SƏN BİLİRDİN?"), emoji: 💬/🤔 benzeri.
+5. **Döngü (loop):** Son cümle doğal olarak ilk cümleye bağlanacak şekilde yaz, böylece video başa döndüğünde akış kopmaz (tekrar izlenme sayısını artırır).
+6. **Konu seçimi:** Geniş kitlenin "vay!" diyeceği, gündelik hayata dokunan konular. Haftada 1–2 kez Azerbaycan'a özgü bir konu (tarih, coğrafya, doğa, bilim insanları, rekorlar). Yerel açı hem yeni bilgi sunar hem de yerel kitlenin paylaşımını artırır.
+7. Dil: Azerbaycan Türkçesi (Latin alfabesi), doğru dilbilgisi, konuşma dili gibi akıcı. Sayıları seslendirme metninde yazıyla yaz ("iki yüz qırx üç"); `big` alanında rakam kullanılabilir.
+8. `big` en fazla ~16 karakter, BÜYÜK HARF (Azerbaycanca İ/I kurallarıyla).
+9. `emoji`: ilk emoji büyük ana görsel, diğerleri etrafında döner. Üzerinde yazı olan emojileri kullanma (📅 "July 17" gösterir; 🆒 🆕 gibi İngilizce yazılılar da olmaz).
+10. Doğruluk şart: yalnızca iyi bilinen, doğrulanabilir bilgiler. Emin değilsen web'de doğrula; şüpheli "internet efsanelerini" kullanma.
 
 ## Üretim
 ```bash
@@ -39,4 +46,9 @@ Render ~4 dk sürer; arka planda çalıştırıp bitmesini bekle.
 - schedulingType "automatic", mode "customScheduled", dueAt `YYYY-MM-DDT12:00:00+04:00` (Bakü)
 - Video URL: `https://raw.githubusercontent.com/maraqloid/videos/main/videos/<dosya>.mp4`
 - Açıklamalarda "her gün 12:00" gibi saat/periyot ifadesi KULLANMA.
-- Açıklama sonu: YouTube → "Daha çox maraqlı fakt üçün abunə olun! 🔔", Instagram → "Daha çox maraqlı fakt üçün izlə: @maraqloid". 4–5 hashtag (#maraqlıfaktlar #bilirdinizmi + konuya özel; YouTube'da #shorts).
+
+## Başlık ve açıklama (arama + etkileşim)
+- **YouTube başlığı:** ≤60 karakter, insanların arayacağı anahtar kelime başta (konu adı), merak uyandıran iddia ya da soru, sonda 1 emoji + `#shorts`. Örn: "Venerada gün ildən uzundur?! 🪐 #shorts"
+- **YouTube açıklaması:** 1. cümle anahtar kelimeleri içeren özet; 2. cümle yorum sorusu ("Sən bunu bilirdin? Şərhdə yaz 👇"); sonra "Daha çox maraqlı fakt üçün abunə olun! 🔔"; sonra 3–4 hashtag (#maraqlıfaktlar #bilirdinizmi + konu + #shorts).
+- **Instagram açıklaması:** 1. satır kanca (videodaki iddia, anahtar kelimeli); 1–2 cümle ek bilgi; yorum sorusu; paylaşım çağrısı "Bunu bilməyən dostuna göndər 📩"; "Daha çox maraqlı fakt üçün izlə: @maraqloid"; 3–5 hashtag (#maraqlıfaktlar #bilirdinizmi #azərbaycan + konu).
+- Haftalık öğrenimler varsa (`insights.md`), konu ve kanca seçiminde onları uygula.

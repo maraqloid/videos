@@ -2,11 +2,10 @@
   "title": "Venerada bir gün bir ildən uzundur",
   "palette": [[40, 20, 70], [150, 70, 40]],
   "scenes": [
-    {"text": "Bilirdinizmi? Venerada bir gün bir ildən uzundur!", "emoji": ["🔭", "☀️", "🌍"], "big": "GÜN > İL"},
-    {"text": "Venera öz oxu ətrafında çox yavaş fırlanır: bir dövrə təxminən iki yüz qırx üç Yer günü çəkir.", "emoji": ["🐢", "🔄"], "big": "243 GÜN", "palette": [[30, 30, 90], [90, 50, 140]]},
-    {"text": "Günəşin ətrafında tam dövrə isə cəmi iki yüz iyirmi beş gün çəkir.", "emoji": ["☀️", "🔄", "⏱️"], "big": "225 GÜN", "palette": [[90, 40, 20], [190, 110, 30]]},
-    {"text": "Yəni orada il, gündən daha tez bitir!", "emoji": ["⏳", "🤯"], "big": "İL < GÜN", "palette": [[50, 15, 80], [140, 40, 110]]},
-    {"text": "Üstəlik, Venera əks istiqamətdə fırlanır. Orada Günəş qərbdən doğur!", "emoji": ["🌅", "⬅️"], "big": "QƏRBDƏN DOĞUR", "palette": [[110, 40, 30], [200, 100, 50]]},
-    {"text": "Daha çox maraqlı fakt üçün Maraqloidə abunə olun!", "emoji": ["🔔", "⭐", "👍"], "big": "ABUNƏ OL!", "palette": [[90, 20, 60], [200, 60, 60]]}
+    {"text": "Venerada bir gün bir ildən uzundur!", "emoji": ["🔭", "☀️", "⏳"], "big": "GÜN > İL"},
+    {"text": "Venera öz oxu ətrafında çox yavaş fırlanır: bir dövrə iki yüz qırx üç Yer günü çəkir.", "emoji": ["🐢", "🔄"], "big": "243 GÜN", "palette": [[30, 30, 90], [90, 50, 140]]},
+    {"text": "Günəşin ətrafında tam dövrə isə cəmi iki yüz iyirmi beş gün çəkir. Yəni il, gündən tez bitir!", "emoji": ["☀️", "🔄", "⏱️"], "big": "225 GÜN", "palette": [[90, 40, 20], [190, 110, 30]]},
+    {"text": "Amma ən qəribəsi: Venera əks istiqamətdə fırlanır, orada Günəş qərbdən doğur!", "emoji": ["🌅", "⬅️"], "big": "QƏRBDƏN DOĞUR", "palette": [[110, 40, 30], [200, 100, 50]]},
+    {"text": "Sən bunu bilirdin? Şərhdə yaz!", "emoji": ["💬", "🤔"], "big": "SƏN BİLİRDİN?", "palette": [[50, 15, 80], [140, 40, 110]]}
   ]
 }
