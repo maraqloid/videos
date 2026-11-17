@@ -18,6 +18,7 @@ Bu depo @maraqloid (YouTube Shorts + Instagram Reels) için günlük videoları 
 
 ## Gerçek görüntüler (Pexels / Pixabay)
 Her sahneye `"query"` alanı ekle: o sahnede anlatılanı birebir gösteren, İngilizce, somut ve görsel bir arama ifadesi (2–4 kelime).
+- Sorgunun **ilk kelimesi ana konu** olmalı (motor, etiketlerinde bu kelime geçmeyen görüntüleri eler). Yeşil perde, animasyon ve yapay zekâ ile üretilmiş klipler otomatik elenir.
 - İyi: `"mud volcano eruption"`, `"octopus swimming"`, `"venus planet"`, `"baku old city"`. Kötü: `"interesting fact"`, `"history"`, `"amazing"`.
 - Varsayılan dikey **video klip** aranır; bulunamazsa fotoğraf (yavaş yakınlaşma efektiyle) kullanılır. Sadece fotoğraf istersen `"media": "photo"` ekle (ör. tarihi kişi, harita, belirli bir yapı).
 - `query` verilmeyen ya da hiçbir görüntü bulunamayan sahne eski emoji tarzına döner. Yorum sorusu sahnesi için de bir `query` ver (ör. konuyla ilgili genel bir çekim).

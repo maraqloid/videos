@@ -320,9 +320,35 @@ def _download(url, path):
             f.write(b)
     os.replace(path + ".part", path)
 
-def pixabay_media(query, dur, work, used, kind="video"):
-    """Pixabay (free, commercial use, no attribution). Videos are mostly landscape; the
-    largest rendition is used so the 9:16 centre crop stays sharp."""
+BAD_TAGS = ("green screen", "greenscreen", "chroma", "overlay", "alpha channel", "transparent", "animation", "animated",
+            "cartoon", "illustration", "3d", "render", "ai generated", "ai-generated", "generated", "artificial intelligence",
+            "fantasy", "loop background", "motion graphics", "particles", "abstract", "text", "logo")
+
+def _stem(w):
+    for suf in ("ing", "es", "ed", "s"):
+        if len(w) > len(suf) + 2 and w.endswith(suf):
+            return w[: -len(suf)]
+    return w
+
+def _tag_score(query, tags):
+    """(matched query words, needed). 0 if a bad tag is present or the first (main subject)
+    word of the query is missing from the tags."""
+    t = (tags or "").lower()
+    tl = [x.strip() for x in t.split(",")]
+    if any(bt in tl or (" " in bt and bt in t) for bt in BAD_TAGS):
+        return 0, 1
+    toks = {_stem(x) for x in re.split(r"[^a-z0-9]+", t) if x}
+    words = [_stem(w) for w in re.split(r"[^a-z0-9]+", query.lower()) if len(w) > 2]
+    def hit(w):
+        return w in toks or (len(w) >= 5 and any(len(x) >= 5 and x[:5] == w[:5] for x in toks))
+    if not words or not hit(words[0]):
+        return 0, max(1, len(words))
+    return sum(1 for w in words if hit(w)), len(words)
+
+def pixabay_media(query, dur, work, used, kind="video", strict=True):
+    """Pixabay (free, commercial use, no attribution). Picks the hit whose tags match the
+    query best; strict=True requires every query word in the tags. A long clip may serve
+    several scenes, each from a different start offset."""
     key = os.environ.get("MQ_PIXABAY_KEY")
     if not key or not query:
         return None
@@ -330,46 +356,65 @@ def pixabay_media(query, dur, work, used, kind="video"):
     hdr = {"User-Agent": "maraqloid"}
     try:
         if kind == "video":
-            r = _http_json(f"https://pixabay.com/api/videos/?key={key}&q={quote(query)}&safesearch=true&per_page=30&order=popular", hdr)
-            best = None
-            for v in r.get("hits", []):
-                if ("x", v["id"]) in used or v.get("duration", 0) < min(dur, 4):
+            r = _http_json(f"https://pixabay.com/api/videos/?key={key}&q={quote(query)}&safesearch=true&per_page=50", hdr)
+            cands = []
+            for rank, v in enumerate(r.get("hits", [])):
+                sc_, need = _tag_score(query, v.get("tags"))
+                if sc_ == 0 or (strict and sc_ < need):
                     continue
+                off = used.get(("v", v["id"]), 0.0)
+                if v.get("duration", 0) - off < min(dur, 3):
+                    continue
+                f = None
                 for size in ("large", "medium"):
-                    f = (v.get("videos") or {}).get(size) or {}
-                    if not f.get("url") or not f.get("width"):
-                        continue
-                    # height of the 9:16 crop we can take without upscaling
-                    crop_w = min(f["width"], int(f["height"] * 9 / 16))
-                    if crop_w >= 600:
-                        best = (v, f)
+                    g = (v.get("videos") or {}).get(size) or {}
+                    if g.get("url") and g.get("height") and min(g["width"], int(g["height"] * 9 / 16)) >= 600:
+                        f = g
                         break
-                if best:
-                    break
-            if best:
-                v, f = best
+                if f:
+                    cands.append((-sc_, off > 0, rank, v, f, off))
+            if cands:
+                cands.sort(key=lambda c: c[:3])
+                _, _, _, v, f, off = cands[0]
                 path = os.path.join(work, f"pixabay_v{v['id']}.mp4")
                 if not os.path.exists(path):
                     _download(f["url"], path)
-                used.add(("x", v["id"]))
-                return "video", path
-        r = _http_json(f"https://pixabay.com/api/?key={key}&q={quote(query)}&image_type=photo&orientation=vertical&safesearch=true&per_page=30", hdr)
-        for ph in r.get("hits", []):
-            if ("x", ph["id"]) in used:
+                used[("v", v["id"])] = off + dur + 0.5
+                return "video", path, off
+            return None
+        r = _http_json(f"https://pixabay.com/api/?key={key}&q={quote(query)}&image_type=photo&safesearch=true&per_page=50", hdr)
+        cands = []
+        for rank, ph in enumerate(r.get("hits", [])):
+            if ("p", ph["id"]) in used:
                 continue
+            sc_, need = _tag_score(query, ph.get("tags"))
+            if sc_ == 0 or (strict and sc_ < need):
+                continue
+            portrait = ph.get("imageHeight", 0) >= ph.get("imageWidth", 1)
+            cands.append((-sc_, not portrait, rank, ph))
+        if cands:
+            cands.sort(key=lambda c: c[:3])
+            ph = cands[0][3]
             url = ph.get("largeImageURL") or ph.get("webformatURL")
             path = os.path.join(work, f"pixabay_p{ph['id']}.jpg")
             if not os.path.exists(path):
                 _download(url, path)
-            used.add(("x", ph["id"]))
-            return "photo", path
+            used[("p", ph["id"])] = 1
+            return "photo", path, 0.0
     except Exception as e:
         print(f"WARNING: pixabay lookup failed for {query!r}: {e}", file=sys.stderr)
     return None
 
 def stock_media(query, dur, work, used, kind="video"):
-    for fn in (pexels_media, pixabay_media):
-        r = fn(query, dur, work, used, kind)
+    """Best-matching real footage: exact-tag video, exact-tag photo, then looser matches."""
+    order = [("video", True), ("photo", True), ("video", False), ("photo", False)]
+    if kind == "photo":
+        order = [("photo", True), ("photo", False)]
+    for k, strict in order:
+        r = pexels_media(query, dur, work, used, k) if strict else None
+        if r:
+            return r
+        r = pixabay_media(query, dur, work, used, k, strict)
         if r:
             return r
     return None
@@ -385,7 +430,7 @@ def pexels_media(query, dur, work, used, kind="video"):
         if kind == "video":
             r = _http_json(f"https://api.pexels.com/videos/search?query={quote(query)}&orientation=portrait&per_page=20", hdr)
             for v in r.get("videos", []):
-                if v["id"] in used or v.get("duration", 0) < min(dur, 4):
+                if ("pv", v["id"]) in used or v.get("duration", 0) < min(dur, 4):
                     continue
                 files = [f for f in v.get("video_files", []) if f.get("file_type") == "video/mp4"
                          and f.get("height") and f.get("width") and f["height"] > f["width"] and f["height"] >= 1280]
@@ -395,24 +440,24 @@ def pexels_media(query, dur, work, used, kind="video"):
                 path = os.path.join(work, f"pexels_v{v['id']}.mp4")
                 if not os.path.exists(path):
                     _download(f["link"], path)
-                used.add(v["id"])
-                return "video", path
+                used[("pv", v["id"])] = 1
+                return "video", path, 0.0
         r = _http_json(f"https://api.pexels.com/v1/search?query={quote(query)}&orientation=portrait&per_page=20", hdr)
         for ph in r.get("photos", []):
-            if ph["id"] in used:
+            if ("pp", ph["id"]) in used:
                 continue
             path = os.path.join(work, f"pexels_p{ph['id']}.jpg")
             if not os.path.exists(path):
                 _download(ph["src"].get("large2x") or ph["src"]["original"], path)
-            used.add(ph["id"])
-            return "photo", path
+            used[("pp", ph["id"])] = 1
+            return "photo", path, 0.0
     except Exception as e:
         print(f"WARNING: pexels lookup failed for {query!r}: {e}", file=sys.stderr)
     return None
 
 class BgVideo:
-    def __init__(self, path, dur):
-        self.p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-stream_loop", "-1", "-i", path, "-t", f"{dur + 0.5:.3f}",
+    def __init__(self, path, dur, offset=0.0):
+        self.p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", f"{offset:.2f}", "-stream_loop", "-1", "-i", path, "-t", f"{dur + 0.5:.3f}",
                                    "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},"
                                           "eq=saturation=1.08:contrast=1.04",
                                    "-an", "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -474,7 +519,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
     media = sc.get("_media")
     src = None
     if media:
-        src = BgVideo(media[1], dur) if media[0] == "video" else BgPhoto(media[1], dur, seed=idx)
+        src = BgVideo(media[1], dur, media[2]) if media[0] == "video" else BgPhoto(media[1], dur, seed=idx)
     emojis = [] if src else sc.get("emoji", [])
     big = sc.get("big", "")
     for i in range(n):
@@ -612,12 +657,12 @@ def build(spec_path, out):
         t_acc += sc["dur"]
     json.dump(timing, open(os.path.join(work, "timing.json"), "w"), ensure_ascii=False, indent=1)
     total = len(voice) / SR
-    used, real = set(), 0
+    used, real = {}, 0
     for sc in scenes:
         q = sc.get("query")
         sc["_media"] = stock_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
-        if q and sc["_media"] is None and sc.get("media", "video") == "video":
-            sc["_media"] = stock_media(q, sc["dur"], work, used, "photo")
+        if q and sc["_media"] is None:
+            print(f"WARNING: no real footage for query {q!r}; scene falls back to emoji", file=sys.stderr)
         real += sc["_media"] is not None
     part = Particles()
     files, t0 = [], 0
