@@ -34,11 +34,11 @@ Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oran�
 4. **Ayrı "abunə ol" sahnesi YOK:** İnsanlar orada geçiyor. Son sahne = son şaşırtıcı bilgi + yorumu tetikleyen kısa soru, ör. "Sən bunu bilirdin? Şərhdə yaz!" / "Sənin fikrin nədir: ... yoxsa ...?". `big`: kısa soru (ör. "SƏN BİLİRDİN?"), emoji: 💬/🤔 benzeri.
 5. **Senkron:** Senaryoda üç nokta (...) ve uzun dramatik duraklamalar kullanma; motor uzun sessizlikleri zaten kısaltır.
 6. **Döngü (loop):** Son cümle doğal olarak ilk cümleye bağlanacak şekilde yaz, böylece video başa döndüğünde akış kopmaz (tekrar izlenme sayısını artırır).
-6. **Konu seçimi:** Geniş kitlenin "vay!" diyeceği, gündelik hayata dokunan konular. Haftada 1–2 kez Azerbaycan'a özgü bir konu (tarih, coğrafya, doğa, bilim insanları, rekorlar). Yerel açı hem yeni bilgi sunar hem de yerel kitlenin paylaşımını artırır.
-7. Dil: Azerbaycan Türkçesi (Latin alfabesi), doğru dilbilgisi, konuşma dili gibi akıcı. Sayıları seslendirme metninde yazıyla yaz ("iki yüz qırx üç"); `big` alanında rakam kullanılabilir.
-8. `big` en fazla ~16 karakter, BÜYÜK HARF (Azerbaycanca İ/I kurallarıyla).
-9. `emoji`: ilk emoji büyük ana görsel, diğerleri etrafında döner. Üzerinde yazı olan emojileri kullanma (📅 "July 17" gösterir; 🆒 🆕 gibi İngilizce yazılılar da olmaz).
-10. Doğruluk şart: yalnızca iyi bilinen, doğrulanabilir bilgiler. Emin değilsen web'de doğrula; şüpheli "internet efsanelerini" kullanma.
+7. **Konu seçimi:** Geniş kitlenin "vay!" diyeceği, gündelik hayata dokunan konular. Haftada 1–2 kez Azerbaycan'a özgü bir konu (tarih, coğrafya, doğa, bilim insanları, rekorlar). Yerel açı hem yeni bilgi sunar hem de yerel kitlenin paylaşımını artırır.
+8. Dil: Azerbaycan Türkçesi (Latin alfabesi), doğru dilbilgisi, konuşma dili gibi akıcı. Sayıları seslendirme metninde yazıyla yaz ("iki yüz qırx üç"); `big` alanında rakam kullanılabilir.
+9. `big` en fazla ~16 karakter, BÜYÜK HARF (Azerbaycanca İ/I kurallarıyla).
+10. `emoji`: ilk emoji büyük ana görsel, diğerleri etrafında döner. Üzerinde yazı olan emojileri kullanma (📅 "July 17" gösterir; 🆒 🆕 gibi İngilizce yazılılar da olmaz).
+11. Doğruluk şart: yalnızca iyi bilinen, doğrulanabilir bilgiler. Emin değilsen web'de doğrula; şüpheli "internet efsanelerini" kullanma.
 
 ## Üretim
 ```bash
