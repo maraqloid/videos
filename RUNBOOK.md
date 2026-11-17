@@ -16,7 +16,7 @@ Bu depo @maraqloid (YouTube Shorts + Instagram Reels) için günlük videoları 
              "palette": [[r,g,b],[r,g,b]]}]}
 ```
 
-## Gerçek görüntüler (Pexels)
+## Gerçek görüntüler (Pexels / Pixabay)
 Her sahneye `"query"` alanı ekle: o sahnede anlatılanı birebir gösteren, İngilizce, somut ve görsel bir arama ifadesi (2–4 kelime).
 - İyi: `"mud volcano eruption"`, `"octopus swimming"`, `"venus planet"`, `"baku old city"`. Kötü: `"interesting fact"`, `"history"`, `"amazing"`.
 - Varsayılan dikey **video klip** aranır; bulunamazsa fotoğraf (yavaş yakınlaşma efektiyle) kullanılır. Sadece fotoğraf istersen `"media": "photo"` ekle (ör. tarihi kişi, harita, belirli bir yapı).
@@ -43,7 +43,7 @@ Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oran�
 ## Üretim
 ```bash
 pip install --break-system-packages -q espeakng-loader numpy pillow cairosvg
-MQ_ELEVEN_KEY=<anahtar> MQ_ELEVEN_VOICE=BQgh92MxG7QAtCA8wY7O MQ_PEXELS_KEY=<anahtar> \
+MQ_ELEVEN_KEY=<anahtar> MQ_ELEVEN_VOICE=BQgh92MxG7QAtCA8wY7O MQ_PIXABAY_KEY=<anahtar> \
   python3 engine/engine.py specs/<dosya>.json /tmp/render/<dosya>.mp4
 ```
 Çıktı JSON'unda `"tts": ["elevenlabs"]` olmalı. `espeak` çıktıysa (robotik ses) YAYINLAMA; kullanıcıya bildir.

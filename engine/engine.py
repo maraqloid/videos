@@ -320,6 +320,60 @@ def _download(url, path):
             f.write(b)
     os.replace(path + ".part", path)
 
+def pixabay_media(query, dur, work, used, kind="video"):
+    """Pixabay (free, commercial use, no attribution). Videos are mostly landscape; the
+    largest rendition is used so the 9:16 centre crop stays sharp."""
+    key = os.environ.get("MQ_PIXABAY_KEY")
+    if not key or not query:
+        return None
+    from urllib.parse import quote
+    hdr = {"User-Agent": "maraqloid"}
+    try:
+        if kind == "video":
+            r = _http_json(f"https://pixabay.com/api/videos/?key={key}&q={quote(query)}&safesearch=true&per_page=30&order=popular", hdr)
+            best = None
+            for v in r.get("hits", []):
+                if ("x", v["id"]) in used or v.get("duration", 0) < min(dur, 4):
+                    continue
+                for size in ("large", "medium"):
+                    f = (v.get("videos") or {}).get(size) or {}
+                    if not f.get("url") or not f.get("width"):
+                        continue
+                    # height of the 9:16 crop we can take without upscaling
+                    crop_w = min(f["width"], int(f["height"] * 9 / 16))
+                    if crop_w >= 600:
+                        best = (v, f)
+                        break
+                if best:
+                    break
+            if best:
+                v, f = best
+                path = os.path.join(work, f"pixabay_v{v['id']}.mp4")
+                if not os.path.exists(path):
+                    _download(f["url"], path)
+                used.add(("x", v["id"]))
+                return "video", path
+        r = _http_json(f"https://pixabay.com/api/?key={key}&q={quote(query)}&image_type=photo&orientation=vertical&safesearch=true&per_page=30", hdr)
+        for ph in r.get("hits", []):
+            if ("x", ph["id"]) in used:
+                continue
+            url = ph.get("largeImageURL") or ph.get("webformatURL")
+            path = os.path.join(work, f"pixabay_p{ph['id']}.jpg")
+            if not os.path.exists(path):
+                _download(url, path)
+            used.add(("x", ph["id"]))
+            return "photo", path
+    except Exception as e:
+        print(f"WARNING: pixabay lookup failed for {query!r}: {e}", file=sys.stderr)
+    return None
+
+def stock_media(query, dur, work, used, kind="video"):
+    for fn in (pexels_media, pixabay_media):
+        r = fn(query, dur, work, used, kind)
+        if r:
+            return r
+    return None
+
 def pexels_media(query, dur, work, used, kind="video"):
     """Find a portrait clip (or photo) on Pexels. Returns ("video"|"photo", local_path) or None."""
     key = os.environ.get("MQ_PEXELS_KEY")
@@ -561,9 +615,9 @@ def build(spec_path, out):
     used, real = set(), 0
     for sc in scenes:
         q = sc.get("query")
-        sc["_media"] = pexels_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
+        sc["_media"] = stock_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
         if q and sc["_media"] is None and sc.get("media", "video") == "video":
-            sc["_media"] = pexels_media(q, sc["dur"], work, used, "photo")
+            sc["_media"] = stock_media(q, sc["dur"], work, used, "photo")
         real += sc["_media"] is not None
     part = Particles()
     files, t0 = [], 0
