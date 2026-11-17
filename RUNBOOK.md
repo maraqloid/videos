@@ -16,6 +16,15 @@ Bu depo @maraqloid (YouTube Shorts + Instagram Reels) için günlük videoları 
              "palette": [[r,g,b],[r,g,b]]}]}
 ```
 
+## Gerçek görüntüler (Pexels)
+Her sahneye `"query"` alanı ekle: o sahnede anlatılanı birebir gösteren, İngilizce, somut ve görsel bir arama ifadesi (2–4 kelime).
+- İyi: `"mud volcano eruption"`, `"octopus swimming"`, `"venus planet"`, `"baku old city"`. Kötü: `"interesting fact"`, `"history"`, `"amazing"`.
+- Varsayılan dikey **video klip** aranır; bulunamazsa fotoğraf (yavaş yakınlaşma efektiyle) kullanılır. Sadece fotoğraf istersen `"media": "photo"` ekle (ör. tarihi kişi, harita, belirli bir yapı).
+- `query` verilmeyen ya da hiçbir görüntü bulunamayan sahne eski emoji tarzına döner. Yorum sorusu sahnesi için de bir `query` ver (ör. konuyla ilgili genel bir çekim).
+- `emoji` alanını yine de doldur (yedek olarak kullanılır).
+- Render çıktısındaki `"real_media_scenes"` değeri en az sahnelerin çoğunluğu olmalı. Log'da `WARNING: pexels lookup failed` görürsen sorgu kelimelerini değiştirip yeniden dene.
+- **Görüntü doğruluğu:** Render sonrası her sahneden bir kare çıkarıp bak. Görüntü anlatılanla örtüşmüyorsa (ör. palçıq vulkanı yerine lav püskürten volkan, Venera yerine Ay) sorguyu değiştir ve yeniden render et. Yanlış ya da yanıltıcı görüntü kullanma; tanınabilir kişileri, anlatılan olayla ilgisiz bir bağlamda gösterme.
+
 ## Erişim ve etkileşim kuralları (her videoda uygula)
 Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oranına bakar. Her şey buna göre:
 
@@ -23,7 +32,8 @@ Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oran�
 2. **Kısa ve tek fikir:** 4–6 sahne, toplam 15–30 sn. Tek bir konu; her sahne bir öncekinden daha şaşırtıcı ya da somut olsun. Gereksiz tekrar cümlesi yok.
 3. **Merak boşluğu:** Mümkünse 1. ya da 2. sahnede açık bir soru bırak, cevabı sonda ver ("Ama asıl ilginci başka..." gibi). Vaat ettiğini mutlaka ver, yanıltıcı kanca yok.
 4. **Ayrı "abunə ol" sahnesi YOK:** İnsanlar orada geçiyor. Son sahne = son şaşırtıcı bilgi + yorumu tetikleyen kısa soru, ör. "Sən bunu bilirdin? Şərhdə yaz!" / "Sənin fikrin nədir: ... yoxsa ...?". `big`: kısa soru (ör. "SƏN BİLİRDİN?"), emoji: 💬/🤔 benzeri.
-5. **Döngü (loop):** Son cümle doğal olarak ilk cümleye bağlanacak şekilde yaz, böylece video başa döndüğünde akış kopmaz (tekrar izlenme sayısını artırır).
+5. **Senkron:** Senaryoda üç nokta (...) ve uzun dramatik duraklamalar kullanma; motor uzun sessizlikleri zaten kısaltır.
+6. **Döngü (loop):** Son cümle doğal olarak ilk cümleye bağlanacak şekilde yaz, böylece video başa döndüğünde akış kopmaz (tekrar izlenme sayısını artırır).
 6. **Konu seçimi:** Geniş kitlenin "vay!" diyeceği, gündelik hayata dokunan konular. Haftada 1–2 kez Azerbaycan'a özgü bir konu (tarih, coğrafya, doğa, bilim insanları, rekorlar). Yerel açı hem yeni bilgi sunar hem de yerel kitlenin paylaşımını artırır.
 7. Dil: Azerbaycan Türkçesi (Latin alfabesi), doğru dilbilgisi, konuşma dili gibi akıcı. Sayıları seslendirme metninde yazıyla yaz ("iki yüz qırx üç"); `big` alanında rakam kullanılabilir.
 8. `big` en fazla ~16 karakter, BÜYÜK HARF (Azerbaycanca İ/I kurallarıyla).
@@ -33,7 +43,7 @@ Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oran�
 ## Üretim
 ```bash
 pip install --break-system-packages -q espeakng-loader numpy pillow cairosvg
-MQ_ELEVEN_KEY=<anahtar> MQ_ELEVEN_VOICE=BQgh92MxG7QAtCA8wY7O \
+MQ_ELEVEN_KEY=<anahtar> MQ_ELEVEN_VOICE=BQgh92MxG7QAtCA8wY7O MQ_PEXELS_KEY=<anahtar> \
   python3 engine/engine.py specs/<dosya>.json /tmp/render/<dosya>.mp4
 ```
 Çıktı JSON'unda `"tts": ["elevenlabs"]` olmalı. `espeak` çıktıysa (robotik ses) YAYINLAMA; kullanıcıya bildir.

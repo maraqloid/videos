@@ -191,6 +191,54 @@ def chunk_times(text, chars, maxw=4):
         pos = i + len(ch)
     return out
 
+def tighten(a, chars, max_gap=0.28, keep_gap=0.18, head=0.03, tail=0.10):
+    """Remove leading/trailing silence and shorten long internal pauses (ElevenLabs v3 adds
+    breaths and dramatic pauses). Remaps the character timings so captions stay in sync."""
+    hop = int(0.01 * SR)
+    n = len(a) // hop
+    if n < 3:
+        return a, chars
+    rms = np.sqrt(np.mean(a[: n * hop].reshape(n, hop) ** 2, axis=1) + 1e-12)
+    voiced = rms > rms.max() * 10 ** (-32 / 20)
+    vi = np.where(voiced)[0]
+    if len(vi) == 0:
+        return a, chars
+    runs = [[vi[0], vi[0]]]
+    for i in vi[1:]:
+        if (i - runs[-1][1]) * 0.01 > max_gap:
+            runs.append([i, i])
+        else:
+            runs[-1][1] = i
+    half = int(keep_gap / 2 * SR)
+    ranges = []
+    for k, (r0, r1) in enumerate(runs):
+        s0 = r0 * hop - (int(head * SR) if k == 0 else half)
+        e0 = (r1 + 1) * hop + (int(tail * SR) if k == len(runs) - 1 else half)
+        ranges.append((max(0, s0), min(len(a), e0)))
+    out, mapping, pos = [], [], 0
+    fade = int(0.008 * SR)
+    for s0, e0 in ranges:
+        seg = a[s0:e0].copy()
+        if len(seg) > 2 * fade:
+            seg[:fade] *= np.linspace(0, 1, fade)
+            seg[-fade:] *= np.linspace(1, 0, fade)
+        mapping.append((s0 / SR, e0 / SR, pos / SR))
+        out.append(seg)
+        pos += len(seg)
+    def m(t):
+        for s0, e0, d0 in mapping:
+            if t < s0:
+                return d0
+            if t <= e0:
+                return d0 + (t - s0)
+        s0, e0, d0 = mapping[-1]
+        return d0 + (e0 - s0)
+    return np.concatenate(out), [(c, m(st), m(en)) for c, st, en in chars]
+
+def clean_tts_text(t):
+    t = t.replace("…", ".").replace("...", ".")
+    return re.sub(r"\.{2,}", ".", t)
+
 # ---------------- music ----------------
 def music(dur):
     t = np.arange(int(dur * SR)) / SR
@@ -256,6 +304,111 @@ def wrap(text, f, maxw, d):
     if cur: lines.append(cur)
     return lines
 
+# ---------------- real footage (Pexels) ----------------
+def _http_json(url, headers):
+    import urllib.request
+    return json.loads(urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30).read())
+
+def _download(url, path):
+    import urllib.request
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 maraqloid"})
+    with urllib.request.urlopen(req, timeout=120) as r, open(path + ".part", "wb") as f:
+        while True:
+            b = r.read(1 << 20)
+            if not b:
+                break
+            f.write(b)
+    os.replace(path + ".part", path)
+
+def pexels_media(query, dur, work, used, kind="video"):
+    """Find a portrait clip (or photo) on Pexels. Returns ("video"|"photo", local_path) or None."""
+    key = os.environ.get("MQ_PEXELS_KEY")
+    if not key or not query:
+        return None
+    from urllib.parse import quote
+    hdr = {"Authorization": key, "User-Agent": "maraqloid"}
+    try:
+        if kind == "video":
+            r = _http_json(f"https://api.pexels.com/videos/search?query={quote(query)}&orientation=portrait&per_page=20", hdr)
+            for v in r.get("videos", []):
+                if v["id"] in used or v.get("duration", 0) < min(dur, 4):
+                    continue
+                files = [f for f in v.get("video_files", []) if f.get("file_type") == "video/mp4"
+                         and f.get("height") and f.get("width") and f["height"] > f["width"] and f["height"] >= 1280]
+                if not files:
+                    continue
+                f = min(files, key=lambda f: abs(f["height"] - 1920))
+                path = os.path.join(work, f"pexels_v{v['id']}.mp4")
+                if not os.path.exists(path):
+                    _download(f["link"], path)
+                used.add(v["id"])
+                return "video", path
+        r = _http_json(f"https://api.pexels.com/v1/search?query={quote(query)}&orientation=portrait&per_page=20", hdr)
+        for ph in r.get("photos", []):
+            if ph["id"] in used:
+                continue
+            path = os.path.join(work, f"pexels_p{ph['id']}.jpg")
+            if not os.path.exists(path):
+                _download(ph["src"].get("large2x") or ph["src"]["original"], path)
+            used.add(ph["id"])
+            return "photo", path
+    except Exception as e:
+        print(f"WARNING: pexels lookup failed for {query!r}: {e}", file=sys.stderr)
+    return None
+
+class BgVideo:
+    def __init__(self, path, dur):
+        self.p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-stream_loop", "-1", "-i", path, "-t", f"{dur + 0.5:.3f}",
+                                   "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},"
+                                          "eq=saturation=1.08:contrast=1.04",
+                                   "-an", "-f", "rawvideo", "-pix_fmt", "rgb24", "pipe:1"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        self.last = None
+    def frame(self, i):
+        b = self.p.stdout.read(W * H * 3)
+        if len(b) == W * H * 3:
+            self.last = Image.frombuffer("RGB", (W, H), b, "raw", "RGB", 0, 1)
+        return self.last.copy() if self.last is not None else Image.new("RGB", (W, H))
+    def close(self):
+        try:
+            self.p.stdout.close(); self.p.kill()
+        except Exception:
+            pass
+
+class BgPhoto:
+    """Slow Ken Burns zoom + pan over a still photo."""
+    def __init__(self, path, dur, seed=0):
+        im = Image.open(path).convert("RGB")
+        s = max(W * 1.18 / im.width, H * 1.18 / im.height)
+        self.im = im.resize((int(im.width * s), int(im.height * s)), Image.LANCZOS)
+        self.n = max(1, int(dur * FPS))
+        r = random.Random(seed)
+        self.dx, self.dy = r.choice([-1, 1]), r.choice([-1, 1])
+    def frame(self, i):
+        k = i / self.n
+        z = 1.0 + 0.12 * k
+        cw, ch = W * 1.15 / z, H * 1.15 / z
+        cx = self.im.width / 2 + self.dx * 0.03 * self.im.width * (k - 0.5)
+        cy = self.im.height / 2 + self.dy * 0.03 * self.im.height * (k - 0.5)
+        cx = min(max(cx, cw / 2), self.im.width - cw / 2)
+        cy = min(max(cy, ch / 2), self.im.height - ch / 2)
+        box = (cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2)
+        return self.im.resize((W, H), Image.BICUBIC, box=box)
+    def close(self):
+        pass
+
+_shade = None
+def shade_overlay():
+    """Dark top/bottom vignette so text stays readable on any footage."""
+    global _shade
+    if _shade is None:
+        y = np.linspace(0, 1, H)[:, None]
+        top = np.clip((0.30 - y) / 0.30, 0, 1) * 150
+        bot = np.clip((y - 0.55) / 0.45, 0, 1) ** 1.2 * 190
+        a = np.repeat((top + bot).astype(np.uint8), W, axis=1)
+        z = np.zeros((H, W), np.uint8)
+        _shade = Image.fromarray(np.dstack([z, z, z, a]), "RGBA")
+    return _shade
+
 def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, part):
     dur = sc["dur"]
     c1, c2 = sc.get("palette", pal)
@@ -264,16 +417,29 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
     p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
                           "-i", "pipe:0", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", tmp],
                          stdin=subprocess.PIPE)
-    emojis = sc.get("emoji", [])
+    media = sc.get("_media")
+    src = None
+    if media:
+        src = BgVideo(media[1], dur) if media[0] == "video" else BgPhoto(media[1], dur, seed=idx)
+    emojis = [] if src else sc.get("emoji", [])
     big = sc.get("big", "")
     for i in range(n):
         t = i / FPS
         tg = t0_global + t
-        bg = gradient(c1, c2, tg).convert("RGBA")
-        ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        d = ImageDraw.Draw(ov)
-        part.draw(d, tg)
-        bg = Image.alpha_composite(bg, ov)
+        if src:
+            frame = src.frame(i)
+            if idx > 0 and t < 0.3:  # quick punch-in at each cut
+                z = 1.0 + 0.07 * (1 - clamp(t / 0.3)) ** 3  # ease-out, never below 1
+                cw, chh = W / z, H / z
+                frame = frame.resize((W, H), Image.BICUBIC, box=((W - cw) / 2, (H - chh) / 2, (W + cw) / 2, (H + chh) / 2))
+            bg = frame.convert("RGBA")
+            bg.alpha_composite(shade_overlay())
+        else:
+            bg = gradient(c1, c2, tg).convert("RGBA")
+            ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            d = ImageDraw.Draw(ov)
+            part.draw(d, tg)
+            bg = Image.alpha_composite(bg, ov)
         # main emoji
         if emojis:
             e_in = 1.0 if sc.get("_first") else clamp(t / 0.45)
@@ -336,10 +502,12 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
         d.text((W // 2, 130), "MARAQLOID", font=fbr, fill=(255, 255, 255, 220), anchor="mm")
         # fade in/out at scene edges (soft flash)
         img = bg.convert("RGB")
-        if t < 0.12 and idx > 0:
+        if t < 0.12 and idx > 0 and not src:
             img = Image.blend(Image.new("RGB", (W, H), (255, 255, 255)), img, clamp(t / 0.12) * 0.7 + 0.3)
         p.stdin.write(img.tobytes())
     p.stdin.close()
+    if src:
+        src.close()
     if p.wait() != 0:
         raise RuntimeError("ffmpeg failed")
     os.replace(tmp, out_path)
@@ -356,19 +524,15 @@ def build(spec_path, out):
         sc["_first"] = si == 0
         lead = 0.0 if si == 0 else 0.1
         if os.environ.get("MQ_ELEVEN_KEY"):
+            sc["text"] = clean_tts_text(sc["text"])
             a, chars = tts_aligned(sc["text"]); engine_used.add("elevenlabs")
             sp = float(os.environ.get("MQ_SPEED", "1.3"))
             if abs(sp - 1) > 0.01:
                 a = np.frombuffer(subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "pipe:0",
                     "-af", f"atempo={sp}", "-f", "f32le", "pipe:1"], input=a.tobytes(), capture_output=True, check=True).stdout, np.float32).copy()
                 chars = [(c, s0 / sp, e0 / sp) for c, s0, e0 in chars]
+            a, chars = tighten(a, chars)
             sc["chunks"] = [{"text": c["text"], "s": c["s"] + lead, "e": c["e"] + lead} for c in chunk_times(sc["text"], chars)]
-            idx = np.where(np.abs(a) > 0.01)[0]
-            if len(idx):
-                st = max(0, idx[0] - 240)  # trim leading silence so speech starts at once
-                a = a[st: idx[-1] + 2400]
-                for c in sc["chunks"]:
-                    c["s"] = max(lead, c["s"] - st / SR); c["e"] = max(c["s"] + 0.1, c["e"] - st / SR)
             audio = [np.zeros(int(lead * SR), np.float32), a]
         else:
             sc["chunks"] = []
@@ -383,9 +547,24 @@ def build(spec_path, out):
         audio.append(np.zeros(int(0.15 * SR), np.float32))
         sc["audio"] = np.concatenate(audio)
         sc["dur"] = round(len(sc["audio"]) / SR * FPS) / FPS
-        voice_parts.append(sc["audio"][: int(sc["dur"] * SR)])
+        need = int(round(sc["dur"] * SR))  # audio length == video length exactly, so nothing drifts
+        a_ = sc["audio"][:need]
+        voice_parts.append(np.pad(a_, (0, need - len(a_))))
     voice = np.concatenate(voice_parts)
+    t_acc, timing = 0.0, []
+    for sc in scenes:
+        timing.append({"scene_start": round(t_acc, 3), "dur": sc["dur"],
+                       "chunks": [{"text": c["text"], "s": round(t_acc + c["s"], 3), "e": round(t_acc + c["e"], 3)} for c in sc["chunks"]]})
+        t_acc += sc["dur"]
+    json.dump(timing, open(os.path.join(work, "timing.json"), "w"), ensure_ascii=False, indent=1)
     total = len(voice) / SR
+    used, real = set(), 0
+    for sc in scenes:
+        q = sc.get("query")
+        sc["_media"] = pexels_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
+        if q and sc["_media"] is None and sc.get("media", "video") == "video":
+            sc["_media"] = pexels_media(q, sc["dur"], work, used, "photo")
+        real += sc["_media"] is not None
     part = Particles()
     files, t0 = [], 0
     for i, sc in enumerate(scenes):
@@ -405,7 +584,7 @@ def build(spec_path, out):
                     "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart",
                     "-shortest", tmp], check=True)
     os.replace(tmp, out)
-    print(json.dumps({"out": out, "duration": round(total, 2), "tts": sorted(engine_used)}))
+    print(json.dumps({"out": out, "duration": round(total, 2), "tts": sorted(engine_used), "real_media_scenes": f"{real}/{len(scenes)}"}))
 
 def still(spec_path, scene_idx, t, png):
     """Render a single frame for checking layout."""
