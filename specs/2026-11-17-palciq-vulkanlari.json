@@ -1,0 +1,11 @@
+{
+  "title": "Dünyadakı palçıq vulkanlarının yarısı Azərbaycandadır",
+  "palette": [[70, 45, 25], [160, 90, 40]],
+  "scenes": [
+    {"text": "Dünyadakı palçıq vulkanlarının yarısı Azərbaycandadır!", "emoji": ["🌋", "🌍", "📍"], "big": "YARISI BİZDƏ"},
+    {"text": "Dünyada təxminən yeddi yüz palçıq vulkanı var. Onların üç yüz əlliyə yaxını bizim torpaqdadır.", "emoji": ["🗺️", "📍"], "big": "350 / 700", "palette": [[40, 60, 40], [120, 110, 50]]},
+    {"text": "Bu vulkanlar lava yox, palçıq və qaz püskürür. Amma bəzən o qaz alışır...", "emoji": ["🟤", "💨"], "big": "LAVA YOX", "palette": [[60, 40, 30], [130, 100, 70]]},
+    {"text": "İki min iyirmi birdə Xəzərdəki Daşlı adasında püskürmə oldu və alov beş yüz metrə qədər qalxdı!", "emoji": ["🔥", "🌊", "🏝️"], "big": "500 M ALOV", "palette": [[120, 30, 10], [220, 110, 30]]},
+    {"text": "Sən Qobustanda palçıq vulkanını görmüsən? Şərhdə yaz! Axı...", "emoji": ["💬", "🤔"], "big": "SƏN GÖRMÜSƏN?", "palette": [[70, 30, 60], [150, 70, 60]]}
+  ]
+}
