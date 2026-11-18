@@ -1,0 +1,11 @@
+{
+  "title": "Bal niyə heç vaxt xarab olmur?",
+  "palette": [[120, 70, 10], [230, 160, 30]],
+  "scenes": [
+    {"text": "Üç min illik bal hələ də xarab olmayıb!", "emoji": ["🍯", "⏳", "🐝"], "big": "3000 İLLİK BAL", "query": "honeycomb honey dripping"},
+    {"text": "Arxeoloqlar Misir məqbərələrində qədim bal qabları tapıblar. Bəs bal niyə xarab olmur?", "emoji": ["🏺", "🔍"], "big": "MİSİR SİRRİ", "query": "pyramid egypt desert", "palette": [[110, 80, 30], [210, 170, 90]]},
+    {"text": "Birincisi, balda su çox azdır. Bakteriyalar orada sadəcə yaşaya bilmir.", "emoji": ["💧", "🦠"], "big": "SU AZDIR", "query": "honey jar spoon", "palette": [[90, 60, 20], [200, 140, 40]]},
+    {"text": "İkincisi, bal turşdur. Arılar ona xüsusi ferment qatır və o, hidrogen peroksid yaradır.", "emoji": ["🐝", "🧪"], "big": "TƏBİİ QORUYUCU", "query": "bee honeycomb hive", "palette": [[100, 70, 10], [240, 180, 40]]},
+    {"text": "Yalnız qapağını kip bağla. Sənin evindəki ən köhnə bal neçə yaşındadır? Şərhdə yaz! Amma unutma:", "emoji": ["💬", "🤔", "🍯"], "big": "SƏNİNKİ NEÇƏ?", "query": "honey jars shelf", "palette": [[110, 50, 20], [220, 130, 40]]}
+  ]
+}
