@@ -26,6 +26,13 @@ Her sahneye `"query"` alanı ekle: o sahnede anlatılanı birebir gösteren, İn
 - Render çıktısındaki `"real_media_scenes"` değeri en az sahnelerin çoğunluğu olmalı. Log'da `WARNING: pexels lookup failed` görürsen sorgu kelimelerini değiştirip yeniden dene.
 - **Görüntü doğruluğu:** Render sonrası her sahneden bir kare çıkarıp bak. Görüntü anlatılanla örtüşmüyorsa (ör. palçıq vulkanı yerine lav püskürten volkan, Venera yerine Ay) sorguyu değiştir ve yeniden render et. Yanlış ya da yanıltıcı görüntü kullanma; tanınabilir kişileri, anlatılan olayla ilgisiz bir bağlamda gösterme.
 
+## Kısaltmalar ve yabancı adlar (seslendirme / altyazı)
+Seslendirmenin yanlış okuyabileceği kısaltma ve yabancı adları `text` içinde okunuşuyla, tek parça (tireyle) yaz ve spec'in en üstüne `display_map` ekle; altyazıda doğru yazım görünür:
+```json
+"display_map": {"Ci-Ti-Ey-altı": "GTA 6", "Vays-Siti": "VICE CITY", "Nasa": "NASA"}
+```
+Değerleri BÜYÜK HARFLE yaz (Latin I/İ karışmasın). Telif hakkıyla korunan oyun/film görüntüsü, logo veya fragman kullanma; Pixabay'den konuyu çağrıştıran genel görüntüler kullan.
+
 ## Erişim ve etkileşim kuralları (her videoda uygula)
 Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oranına bakar. Her şey buna göre:
 
