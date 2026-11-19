@@ -33,6 +33,9 @@ Seslendirmenin yanlış okuyabileceği kısaltma ve yabancı adları `text` içi
 ```
 Değerleri BÜYÜK HARFLE yaz (Latin I/İ karışmasın). Telif hakkıyla korunan oyun/film görüntüsü, logo veya fragman kullanma; Pixabay'den konuyu çağrıştıran genel görüntüler kullan.
 
+## Kullanıcının verdiği görseller
+Bir sahneye kullanıcının yüklediği bir görseli koymak için `"image": "/yerel/yol.jpg"` kullan (Pixabay araması yapılmaz). `"focus_x"` (0–1) dikey kırpmanın yatay merkezini, `"big_y"` (piksel, varsayılan 340) büyük başlığın yüksekliğini ayarlar. Yüzler üstteyse başlığı `"big_y": 1110` ile altyazının üstüne indir. Telifli görselleri herkese açık depoya koyma; yalnızca bitmiş video yüklenir.
+
 ## Erişim ve etkileşim kuralları (her videoda uygula)
 Shorts/Reels algoritması önce "izlendi mi, geçildi mi"ye, sonra izlenme oranına bakar. Her şey buna göre:
 

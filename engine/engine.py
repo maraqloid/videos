@@ -475,19 +475,20 @@ class BgVideo:
 
 class BgPhoto:
     """Slow Ken Burns zoom + pan over a still photo."""
-    def __init__(self, path, dur, seed=0):
+    def __init__(self, path, dur, seed=0, focus_x=0.5, focus_y=0.5):
         im = Image.open(path).convert("RGB")
         s = max(W * 1.18 / im.width, H * 1.18 / im.height)
         self.im = im.resize((int(im.width * s), int(im.height * s)), Image.LANCZOS)
         self.n = max(1, int(dur * FPS))
         r = random.Random(seed)
         self.dx, self.dy = r.choice([-1, 1]), r.choice([-1, 1])
+        self.fx, self.fy = focus_x, focus_y
     def frame(self, i):
         k = i / self.n
         z = 1.0 + 0.12 * k
         cw, ch = W * 1.15 / z, H * 1.15 / z
-        cx = self.im.width / 2 + self.dx * 0.03 * self.im.width * (k - 0.5)
-        cy = self.im.height / 2 + self.dy * 0.03 * self.im.height * (k - 0.5)
+        cx = self.im.width * self.fx + self.dx * 0.03 * self.im.width * (k - 0.5)
+        cy = self.im.height * self.fy + self.dy * 0.03 * self.im.height * (k - 0.5)
         cx = min(max(cx, cw / 2), self.im.width - cw / 2)
         cy = min(max(cy, ch / 2), self.im.height - ch / 2)
         box = (cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2)
@@ -519,7 +520,8 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
     media = sc.get("_media")
     src = None
     if media:
-        src = BgVideo(media[1], dur, media[2]) if media[0] == "video" else BgPhoto(media[1], dur, seed=idx)
+        src = BgVideo(media[1], dur, media[2]) if media[0] == "video" else BgPhoto(media[1], dur, seed=idx,
+                                                                                    focus_x=sc.get("focus_x", 0.5), focus_y=sc.get("focus_y", 0.5))
     emojis = [] if src else sc.get("emoji", [])
     big = sc.get("big", "")
     for i in range(n):
@@ -578,7 +580,7 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
                     fsz -= 6  # a single long word can't wrap: shrink until it fits
                     fb = font(F_BOLD, fsz)
                     lines = wrap(big, fb, W - 120, d)
-                yb = 340 - (len(lines) - 1) * fsz // 2
+                yb = sc.get("big_y", 340) - (len(lines) - 1) * fsz // 2
                 off = (1 - ease_out_back(b_in)) * 120
                 for li, ln in enumerate(lines):
                     draw_text_outlined(d, (W // 2, yb + li * (fsz + 8) + off), ln, fb, (255, 222, 60, int(255 * b_in)), stroke=12,
@@ -669,6 +671,10 @@ def build(spec_path, out):
     used, real = {}, 0
     for sc in scenes:
         q = sc.get("query")
+        if sc.get("image"):  # a still supplied by the user (local path)
+            sc["_media"] = ("photo", sc["image"], 0.0)
+            real += 1
+            continue
         sc["_media"] = stock_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
         if q and sc["_media"] is None:
             print(f"WARNING: no real footage for query {q!r}; scene falls back to emoji", file=sys.stderr)
