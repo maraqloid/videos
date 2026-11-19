@@ -574,6 +574,10 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
                 fsz = 150 if len(lines) == 1 else 120
                 fb = font(F_BOLD, fsz)
                 lines = wrap(big, fb, W - 120, d)
+                while fsz > 60 and max(d.textlength(l, font=fb) for l in lines) > W - 120:
+                    fsz -= 6  # a single long word can't wrap: shrink until it fits
+                    fb = font(F_BOLD, fsz)
+                    lines = wrap(big, fb, W - 120, d)
                 yb = 340 - (len(lines) - 1) * fsz // 2
                 off = (1 - ease_out_back(b_in)) * 120
                 for li, ln in enumerate(lines):
@@ -581,12 +585,16 @@ def render_scene(sc, idx, total_scenes, t0_global, dur_total, out_path, pal, par
                                        stroke_fill=(20, 10, 40, int(255 * b_in)))
         # captions: current chunk
         cur = None
+        dmap = sc.get("_display_map") or {}
         for ch in sc["chunks"]:
             if ch["s"] <= t < ch["e"] + 0.05: cur = ch
         if cur is None and sc["chunks"] and t >= sc["chunks"][-1]["s"]: cur = sc["chunks"][-1]
         if cur:
             fc = font(F_BOLD, 88)
-            lines = wrap(az_upper(cur["text"]), fc, W - 140, d)
+            ctext = cur["text"]
+            for k_, v_ in dmap.items():
+                ctext = ctext.replace(k_, v_)
+            lines = wrap(az_upper(ctext), fc, W - 140, d)
             pop = ease_out_back(clamp((t - cur["s"]) / 0.18))
             y0 = 1330 - (len(lines) - 1) * 52
             # backing pill
@@ -621,6 +629,7 @@ def build(spec_path, out):
     gap = np.zeros(int(0.12 * SR), np.float32)
     for si, sc in enumerate(scenes):
         sc["_first"] = si == 0
+        sc["_display_map"] = spec.get("display_map", {})
         lead = 0.0 if si == 0 else 0.1
         if os.environ.get("MQ_ELEVEN_KEY"):
             sc["text"] = clean_tts_text(sc["text"])

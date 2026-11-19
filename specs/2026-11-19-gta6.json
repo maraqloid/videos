@@ -1,0 +1,12 @@
+{
+  "title": "GTA 6 nəhayət çıxdı",
+  "display_map": {"Ci-Ti-Ey-altı": "GTA 6", "Ci-Ti-Ey-beş": "GTA 5", "Vays-Siti": "VICE CITY"},
+  "scenes": [
+    {"text": "Ci-Ti-Ey-altı nəhayət çıxdı: on üç ildən sonra ilk yeni oyun!", "big": "13 İL SONRA", "query": "miami city night", "emoji": ["🎮", "🌴"]},
+    {"text": "İlk treyleri cəmi bir gündə doxsan milyondan çox baxış toplayıb, Ginnesin rekordlar kitabına düşdü.", "big": "90 MİLYON", "query": "gamer controller playing", "emoji": ["📺", "🏆"]},
+    {"text": "Hadisələr Vays-Siti şəhərində baş verir. Onun prototipi isə real Mayamidir.", "big": "MAYAMİ", "query": "miami beach aerial", "emoji": ["🌴", "🏙️"]},
+    {"text": "İlk hissədən bəri ilk dəfə baş qəhrəmanlardan biri qadındır: Lusiya.", "big": "LUSİYA", "query": "miami sports car night", "emoji": ["🚗", "🌃"]},
+    {"text": "Ci-Ti-Ey-beş isə indiyədək təxminən iki yüz otuz beş milyon nüsxə satılıb.", "big": "235 MİLYON", "query": "video game console", "emoji": ["💿", "📈"]},
+    {"text": "Bəs sən Ci-Ti-Ey-altı oynayırsan? Şərhdə yaz!", "big": "OYNAYIRSAN?", "query": "gaming controller neon", "emoji": ["💬", "🎮"]}
+  ]
+}
