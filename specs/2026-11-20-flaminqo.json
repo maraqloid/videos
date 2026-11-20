@@ -1,0 +1,40 @@
+{
+  "title": "Flaminqolar çəhrayı doğulmur",
+  "palette": [[150, 40, 80], [240, 130, 160]],
+  "scenes": [
+    {
+      "text": "Flaminqolar çəhrayı doğulmur!",
+      "emoji": ["🦩", "❗"],
+      "big": "ÇƏHRAYI DEYİL!",
+      "query": "flamingo pink flock"
+    },
+    {
+      "text": "Balaları boz-ağ rəngdə olur. Bəs bu parlaq rəng sonradan haradan gəlir?",
+      "emoji": ["🐣", "🤔"],
+      "big": "BOZ BALALAR",
+      "query": "flamingo chick",
+      "palette": [[90, 90, 100], [190, 190, 200]]
+    },
+    {
+      "text": "Cavab onların yeməyindədir: duzlu suda yaşayan kiçik krevetlər və yosunlar.",
+      "emoji": ["🦐", "🌿"],
+      "big": "KREVET VƏ YOSUN",
+      "query": "flamingo feeding water",
+      "palette": [[30, 90, 110], [120, 200, 210]]
+    },
+    {
+      "text": "Bu yeməklərdəki karotinoid piqmenti lələkləri yavaş-yavaş çəhrayıya boyayır. Yemək dəyişsə, rəng də solur.",
+      "emoji": ["🦩", "🎨"],
+      "big": "KAROTİNOİD",
+      "query": "flamingo feathers closeup",
+      "palette": [[170, 50, 70], [250, 150, 120]]
+    },
+    {
+      "text": "Qışda onları Azərbaycanda, Qızılağacda da görmək olar. Sən flaminqonun boz doğulduğunu bilirdin? Şərhdə yaz!",
+      "emoji": ["💬", "🤔", "🦩"],
+      "big": "SƏN BİLİRDİN?",
+      "query": "flamingo lake birds",
+      "palette": [[120, 40, 90], [230, 120, 170]]
+    }
+  ]
+}
