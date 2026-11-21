@@ -1,0 +1,144 @@
+{
+  "title": "İldırım Günəşdən istidir",
+  "palette": [
+    [
+      20,
+      20,
+      60
+    ],
+    [
+      120,
+      110,
+      220
+    ]
+  ],
+  "scenes": [
+    {
+      "text": "İldırım Günəşin səthindən beş dəfə istidir!",
+      "emoji": [
+        "⚡",
+        "☀️"
+      ],
+      "big": "GÜNƏŞDƏN İSTİ!",
+      "query": "lightning storm night",
+      "pixabay_id": 198748,
+      "offset": 2.6
+    },
+    {
+      "text": "Bir anda hava təxminən otuz min dərəcəyə qədər qızır. Bəs göy gurultusu haradan gəlir?",
+      "emoji": [
+        "🔥",
+        "🤔"
+      ],
+      "big": "30 000 °C",
+      "query": "lightning strike sky",
+      "palette": [
+        [
+          60,
+          20,
+          20
+        ],
+        [
+          230,
+          120,
+          60
+        ]
+      ],
+      "pixabay_id": 125192,
+      "offset": 8.3
+    },
+    {
+      "text": "Qızan hava partlayış kimi genişlənir. O səs elə göy gurultusudur.",
+      "emoji": [
+        "💥",
+        "☁️"
+      ],
+      "big": "HAVA PARTLAYIR",
+      "query": "thunderstorm clouds lightning",
+      "palette": [
+        [
+          30,
+          30,
+          50
+        ],
+        [
+          140,
+          140,
+          170
+        ]
+      ],
+      "pixabay_id": 41713,
+      "offset": 1.0
+    },
+    {
+      "text": "Şimşəkdən sonra saniyələri say: hər üç saniyə təxminən bir kilometr məsafə deməkdir.",
+      "emoji": [
+        "⏱️",
+        "📏"
+      ],
+      "big": "3 SANİYƏ = 1 KM",
+      "query": "lightning rain storm",
+      "palette": [
+        [
+          20,
+          40,
+          70
+        ],
+        [
+          100,
+          160,
+          220
+        ]
+      ],
+      "pixabay_id": 75016,
+      "offset": 0.0
+    },
+    {
+      "text": "Venesueladakı Marakaybo gölü isə dünyanın ildırım paytaxtıdır: orada şimşək demək olar ki, hər gecə çaxır.",
+      "emoji": [
+        "🌩️",
+        "🌎"
+      ],
+      "big": "İLDIRIM PAYTAXTI",
+      "query": "lightning night sky",
+      "palette": [
+        [
+          30,
+          20,
+          70
+        ],
+        [
+          150,
+          100,
+          230
+        ]
+      ],
+      "pixabay_id": 125192,
+      "offset": 19.3
+    },
+    {
+      "text": "Sən ildırımın Günəşdən isti olduğunu bilirdin? Şərhdə yaz!",
+      "emoji": [
+        "💬",
+        "🤔",
+        "⚡"
+      ],
+      "big": "SƏN BİLİRDİN?",
+      "query": "lightning bolt clouds",
+      "palette": [
+        [
+          20,
+          20,
+          60
+        ],
+        [
+          120,
+          110,
+          220
+        ]
+      ],
+      "pixabay_id": 198748,
+      "offset": 8.4
+    }
+  ]
+}

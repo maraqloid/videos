@@ -405,6 +405,25 @@ def pixabay_media(query, dur, work, used, kind="video", strict=True):
         print(f"WARNING: pixabay lookup failed for {query!r}: {e}", file=sys.stderr)
     return None
 
+def pixabay_video_by_id(vid, work, offset=0.0):
+    """Fetch one specific Pixabay video (chosen after previewing) by its id."""
+    key = os.environ.get("MQ_PIXABAY_KEY")
+    if not key:
+        return None
+    try:
+        r = _http_json(f"https://pixabay.com/api/videos/?key={key}&id={int(vid)}", {"User-Agent": "maraqloid"})
+        v = r["hits"][0]
+        for size in ("large", "medium"):
+            g = (v.get("videos") or {}).get(size) or {}
+            if g.get("url"):
+                path = os.path.join(work, f"pixabay_v{v['id']}.mp4")
+                if not os.path.exists(path):
+                    _download(g["url"], path)
+                return "video", path, float(offset)
+    except Exception as e:
+        print(f"WARNING: pixabay id lookup failed for {vid}: {e}", file=sys.stderr)
+    return None
+
 def stock_media(query, dur, work, used, kind="video"):
     """Best-matching real footage: exact-tag video, exact-tag photo, then looser matches."""
     order = [("video", True), ("photo", True), ("video", False), ("photo", False)]
@@ -675,6 +694,12 @@ def build(spec_path, out):
             sc["_media"] = ("photo", sc["image"], 0.0)
             real += 1
             continue
+        if sc.get("pixabay_id"):  # a specific, hand-checked Pixabay video
+            sc["_media"] = pixabay_video_by_id(sc["pixabay_id"], work, sc.get("offset", 0.0))
+            if sc["_media"]:
+                real += 1
+                continue
+            print(f"WARNING: pixabay id {sc['pixabay_id']} failed; falling back to query", file=sys.stderr)
         sc["_media"] = stock_media(q, sc["dur"], work, used, sc.get("media", "video")) if q else None
         if q and sc["_media"] is None:
             print(f"WARNING: no real footage for query {q!r}; scene falls back to emoji", file=sys.stderr)
