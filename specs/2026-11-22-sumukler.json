@@ -1,0 +1,123 @@
+{
+  "title": "Körpələr 300 sümüklə doğulur",
+  "palette": [
+    [
+      30,
+      40,
+      70
+    ],
+    [
+      120,
+      170,
+      230
+    ]
+  ],
+  "scenes": [
+    {
+      "text": "Sən doğulanda bədənində üç yüzə yaxın sümük vardı!",
+      "emoji": [
+        "👶",
+        "🦴"
+      ],
+      "big": "300 SÜMÜK!",
+      "query": "baby newborn sleeping"
+    },
+    {
+      "text": "Amma böyük insanda cəmi iki yüz altı sümük olur. Bəs qalanları hara yox olur?",
+      "emoji": [
+        "💀",
+        "🤔"
+      ],
+      "big": "İNDİ 206?",
+      "query": "skeleton human anatomy",
+      "palette": [
+        [
+          40,
+          30,
+          60
+        ],
+        [
+          170,
+          140,
+          220
+        ]
+      ]
+    },
+    {
+      "text": "Heç biri itmir, sadəcə birləşir! Məsələn, körpənin kəllə sümükləri ayrı-ayrıdır, ona görə başında yumşaq yer olur.",
+      "emoji": [
+        "🧩",
+        "👶"
+      ],
+      "big": "BİRLƏŞİR!",
+      "query": "baby sleeping newborn",
+      "palette": [
+        [
+          60,
+          30,
+          40
+        ],
+        [
+          230,
+          140,
+          160
+        ]
+      ],
+      "media": "photo"
+    },
+    {
+      "text": "Sümüklərin birləşməsi təxminən iyirmi beş yaşına qədər davam edir.",
+      "emoji": [
+        "⏳",
+        "🦴"
+      ],
+      "big": "25 YAŞA QƏDƏR",
+      "query": "xray bones",
+      "palette": [
+        [
+          20,
+          50,
+          60
+        ],
+        [
+          100,
+          200,
+          210
+        ]
+      ]
+    },
+    {
+      "text": "Ən maraqlısı isə: sümüklərinin yarıdan çoxu yalnız əllərində və ayaqlarındadır!",
+      "emoji": [
+        "🖐️",
+        "🦶"
+      ],
+      "big": "ƏL VƏ AYAQDA!",
+      "query": "hands washing water",
+      "palette": [
+        [
+          50,
+          40,
+          20
+        ],
+        [
+          230,
+          190,
+          100
+        ]
+      ],
+      "pixabay_id": 34091,
+      "offset": 2.0
+    },
+    {
+      "text": "Sən neçə sümüklə doğulduğunu bilirdin? Şərhdə yaz!",
+      "emoji": [
+        "💬",
+        "🤔",
+        "👶"
+      ],
+      "big": "SƏN BİLİRDİN?",
+      "query": "baby hand finger"
+    }
+  ]
+}
