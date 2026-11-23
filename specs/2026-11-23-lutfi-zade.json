@@ -1,0 +1,121 @@
+{
+  "title": "Paltaryuyan maşınının beyni bakılının ixtirasıdır",
+  "palette": [
+    [
+      20,
+      40,
+      70
+    ],
+    [
+      90,
+      170,
+      230
+    ]
+  ],
+  "scenes": [
+    {
+      "text": "Paltaryuyan maşınının beyni bir bakılının ixtirasıdır!",
+      "emoji": [
+        "🧺",
+        "🧠"
+      ],
+      "big": "BAKILI İXTİRASI",
+      "query": "washing machine laundry"
+    },
+    {
+      "text": "Lütfi Zadə min doqquz yüz iyirmi birdə Bakıda doğulub. Bəs o, nə icad edib?",
+      "emoji": [
+        "🏙️",
+        "🤔"
+      ],
+      "big": "LÜTFİ ZADƏ",
+      "query": "baku old city",
+      "palette": [
+        [
+          50,
+          30,
+          20
+        ],
+        [
+          230,
+          170,
+          110
+        ]
+      ]
+    },
+    {
+      "text": "Qeyri-səlis məntiq! Bununla kompüter təkcə hə və yox deyil, bir az və xeyli kimi də düşünə bilir.",
+      "emoji": [
+        "💻",
+        "🎚️"
+      ],
+      "big": "QEYRİ-SƏLİS",
+      "query": "computer code screen",
+      "palette": [
+        [
+          20,
+          50,
+          40
+        ],
+        [
+          100,
+          220,
+          170
+        ]
+      ]
+    },
+    {
+      "text": "Maşın paltarın nə qədər çirkli olduğunu ölçür, suyu və vaxtı özü seçir.",
+      "emoji": [
+        "👕",
+        "💧"
+      ],
+      "big": "ÖZÜ SEÇİR",
+      "query": "laundry clothes washing",
+      "palette": [
+        [
+          30,
+          30,
+          70
+        ],
+        [
+          150,
+          150,
+          240
+        ]
+      ]
+    },
+    {
+      "text": "Fotoaparatların avtofokusu, düyübişirənlər, hətta Yaponiyada metro qatarları da bu məntiqlə işləyib.",
+      "emoji": [
+        "📷",
+        "🚇"
+      ],
+      "big": "METRO DA!",
+      "query": "subway train japan",
+      "palette": [
+        [
+          60,
+          20,
+          40
+        ],
+        [
+          230,
+          120,
+          160
+        ]
+      ]
+    },
+    {
+      "text": "Bəs sənin paltaryuyan maşının ağıllıdır, yoxsa adi? Şərhdə yaz!",
+      "emoji": [
+        "💬",
+        "🤔",
+        "🧺"
+      ],
+      "big": "SƏNİNKİ?",
+      "query": "washing machine control panel",
+      "media": "photo"
+    }
+  ]
+}
