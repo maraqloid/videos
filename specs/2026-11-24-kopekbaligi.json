@@ -1,0 +1,47 @@
+{
+  "title": "Köpəkbalığının sümüyü yoxdur",
+  "palette": [[10, 50, 90], [60, 150, 200]],
+  "scenes": [
+    {
+      "text": "Köpəkbalığının bədənində bir dənə də sümük yoxdur!",
+      "emoji": ["🦈", "❗"],
+      "big": "SÜMÜK YOXDUR!",
+      "query": "shark swimming ocean"
+    },
+    {
+      "text": "Bəs onda bu nəhəng bədəni nə saxlayır?",
+      "emoji": ["🦈", "🤔"],
+      "big": "BƏS NƏ SAXLAYIR?",
+      "query": "shark aquarium swimming",
+      "palette": [[20, 60, 100], [90, 170, 210]]
+    },
+    {
+      "text": "Cavab qığırdaqdır, sənin qulağındakı yumşaq toxuma kimi. Bu, onu yüngül və çevik edir.",
+      "emoji": ["👂", "🦈"],
+      "big": "QIĞIRDAQ",
+      "query": "shark reef swimming",
+      "palette": [[15, 80, 110], [100, 190, 210]]
+    },
+    {
+      "text": "Dişləri isə tökülür və yerinə yenisi çıxır. Ömrü boyu on minlərlə diş dəyişir.",
+      "emoji": ["🦷", "🦈"],
+      "big": "MİNLƏRLƏ DİŞ",
+      "query": "shark mouth teeth",
+      "palette": [[30, 40, 70], [140, 160, 200]]
+    },
+    {
+      "text": "Ən maraqlısı: köpəkbalıqları ağaclardan da qədimdir. Onlar dörd yüz milyon ildən çoxdur ki, okeanlarda yaşayırlar.",
+      "emoji": ["🌳", "🦈"],
+      "big": "AĞACDAN QƏDİM",
+      "query": "shark deep blue",
+      "palette": [[20, 70, 50], [100, 180, 140]]
+    },
+    {
+      "text": "Sənə görə hansı daha qəribədir: sümüksüz bədən, yoxsa ağacdan qədim olmaq? Şərhdə yaz!",
+      "emoji": ["💬", "🤔", "🦈"],
+      "big": "SƏNCƏ HANSI?",
+      "query": "shark swimming school",
+      "palette": [[10, 50, 90], [60, 150, 200]]
+    }
+  ]
+}
