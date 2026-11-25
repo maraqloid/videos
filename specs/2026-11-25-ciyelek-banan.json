@@ -1,0 +1,136 @@
+{
+  "title": "Çiyələk giləmeyvə deyil, banan isə giləmeyvədir",
+  "palette": [
+    [
+      150,
+      20,
+      40
+    ],
+    [
+      240,
+      90,
+      110
+    ]
+  ],
+  "scenes": [
+    {
+      "text": "Çiyələk əslində giləmeyvə deyil!",
+      "emoji": [
+        "🍓",
+        "❗"
+      ],
+      "big": "GİLƏMEYVƏ DEYİL!",
+      "query": "strawberry fresh red",
+      "image": "/tmp/render/img/strawberry_hook.jpg"
+    },
+    {
+      "text": "Bəs onda əsl giləmeyvə hansıdır? Cavab səni təəccübləndirəcək.",
+      "emoji": [
+        "🤔",
+        "🍓"
+      ],
+      "big": "BƏS HANSIDIR?",
+      "query": "strawberry basket fruit",
+      "palette": [
+        [
+          120,
+          30,
+          60
+        ],
+        [
+          220,
+          110,
+          140
+        ]
+      ]
+    },
+    {
+      "text": "Banan! Botanikada giləmeyvənin toxumları içində olur. Banan da, üzüm də, pomidor da belədir.",
+      "emoji": [
+        "🍌",
+        "🍇",
+        "🍅"
+      ],
+      "big": "BANAN!",
+      "query": "banana bunch tree",
+      "palette": [
+        [
+          170,
+          130,
+          10
+        ],
+        [
+          250,
+          220,
+          90
+        ]
+      ]
+    },
+    {
+      "text": "Çiyələyin toxumları isə çöldədir. O kiçik nöqtələrin hər biri əslində ayrıca bir meyvədir!",
+      "emoji": [
+        "🍓",
+        "🔍"
+      ],
+      "big": "HƏR NÖQTƏ MEYVƏ",
+      "query": "strawberry seeds closeup",
+      "palette": [
+        [
+          140,
+          20,
+          30
+        ],
+        [
+          250,
+          120,
+          120
+        ]
+      ],
+      "image": "/tmp/render/img/strawberry_seeds.jpg"
+    },
+    {
+      "text": "Yəni bir çiyələkdə iki yüzə yaxın kiçik meyvə var.",
+      "emoji": [
+        "🍓",
+        "🌱"
+      ],
+      "big": "~200 MEYVƏ",
+      "query": "strawberry field harvest",
+      "palette": [
+        [
+          40,
+          110,
+          40
+        ],
+        [
+          150,
+          220,
+          120
+        ]
+      ]
+    },
+    {
+      "text": "Sənə görə hansı daha qəribədir: banan giləmeyvədir, yoxsa çiyələk deyil? Şərhdə yaz!",
+      "emoji": [
+        "💬",
+        "🤔",
+        "🍌"
+      ],
+      "big": "SƏNCƏ HANSI?",
+      "query": "strawberry pile red",
+      "palette": [
+        [
+          150,
+          20,
+          40
+        ],
+        [
+          240,
+          90,
+          110
+        ]
+      ],
+      "pixabay_id": 148288
+    }
+  ]
+}
