@@ -1,0 +1,44 @@
+{
+  "title": "Dünyanın ən böyük səhrası Sahara deyil, Antarktidadır",
+  "palette": [[20, 70, 130], [140, 200, 240]],
+  "scenes": [
+    {
+      "text": "Dünyanın ən böyük səhrası Sahara deyil!",
+      "emoji": ["🏜️", "❌"],
+      "big": "SAHARA DEYİL!",
+      "query": "sahara desert camel caravan",
+      "palette": [[150, 90, 30], [240, 190, 110]]
+    },
+    {
+      "text": "Bəs onda hansıdır? Cavab qumla yox, buzla bağlıdır.",
+      "emoji": ["🤔", "🧊"],
+      "big": "BƏS HANSIDIR?",
+      "query": "desert sand wind dunes",
+      "palette": [[130, 80, 30], [230, 180, 100]]
+    },
+    {
+      "text": "Antarktida! Səhra qum demək deyil: ildə çox az yağıntı düşən hər yer səhradır.",
+      "emoji": ["🧊", "❄️"],
+      "big": "ANTARKTİDA!",
+      "query": "antarctica ice landscape snow"
+    },
+    {
+      "text": "Antarktida on dörd milyon kvadrat kilometrdir, Saharadan təxminən bir yarım dəfə böyük.",
+      "emoji": ["🌍", "🧊"],
+      "big": "14 MLN KM²",
+      "query": "antarctica iceberg aerial"
+    },
+    {
+      "text": "Üstəlik dünyadakı şirin suyun təxminən yetmiş faizi orada, buz halındadır.",
+      "emoji": ["💧", "🧊"],
+      "big": "70% ŞİRİN SU",
+      "query": "iceberg blue ice floating"
+    },
+    {
+      "text": "Sənə görə yaşamaq harada daha çətindir: Saharada, yoxsa Antarktidada? Şərhdə yaz!",
+      "emoji": ["💬", "🤔", "🐧"],
+      "big": "SƏNCƏ HARADA?",
+      "query": "penguin colony ice snow"
+    }
+  ]
+}
