@@ -1,0 +1,76 @@
+{
+  "title": "Barmaqlarında bir dənə də əzələ yoxdur",
+  "palette": [
+    [
+      120,
+      50,
+      60
+    ],
+    [
+      240,
+      170,
+      150
+    ]
+  ],
+  "scenes": [
+    {
+      "text": "Barmaqlarında bir dənə də əzələ yoxdur!",
+      "emoji": [
+        "✋",
+        "❌"
+      ],
+      "big": "0 ƏZƏLƏ!",
+      "query": "palm hand fingers",
+      "image": "/tmp/render/cand/p1635143.jpg"
+    },
+    {
+      "text": "Bəs onda onlar necə hərəkət edir? Cavab tamam başqa yerdədir.",
+      "emoji": [
+        "🤔",
+        "✋"
+      ],
+      "big": "BƏS NECƏ?",
+      "query": "piano hands playing"
+    },
+    {
+      "text": "Barmaqları idarə edən əzələlər ovucda və qoldadır. Onları ip kimi vətərlər dartır.",
+      "emoji": [
+        "💪",
+        "🧵"
+      ],
+      "big": "İP KİMİ VƏTƏR",
+      "query": "forearm hand grip",
+      "image": "/tmp/render/cand/p8246972.jpg",
+      "focus_x": 0.6
+    },
+    {
+      "text": "Barmaqlarını tərpət və qoluna bax: əzələlərin orada oynadığını görəcəksən!",
+      "emoji": [
+        "👀",
+        "💪"
+      ],
+      "big": "QOLUNA BAX!",
+      "query": "hands typing keyboard"
+    },
+    {
+      "text": "Üstəlik barmaq izlərin hətta əkiz qardaşınınkından da fərqlidir.",
+      "emoji": [
+        "👆",
+        "👯"
+      ],
+      "big": "ƏKİZDƏ BELƏ!",
+      "query": "fingerprint print id",
+      "pixabay_id": 289071
+    },
+    {
+      "text": "Sən bunu bilirdin, yoxsa ilk dəfə eşidirsən? Şərhdə yaz!",
+      "emoji": [
+        "💬",
+        "🤔",
+        "✋"
+      ],
+      "big": "SƏN BİLİRDİN?",
+      "query": "smartphone hand touch screen"
+    }
+  ]
+}

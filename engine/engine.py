@@ -714,6 +714,8 @@ def build(spec_path, out):
         fh.writelines(f"file '{os.path.abspath(f)}'\n" for f in files)
     mix = voice / (np.abs(voice).max() + 1e-6) * 0.9
     mus = music(total)[: len(mix)]
+    if len(mus) < len(mix):
+        mus = np.pad(mus, (0, len(mix) - len(mus)))
     mix = np.clip(mix + mus * 0.35, -1, 1)
     wavp = os.path.join(work, "mix.wav")
     with wave.open(wavp, "wb") as w:
