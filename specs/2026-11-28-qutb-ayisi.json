@@ -1,0 +1,12 @@
+{
+  "title": "Qütb ayısı əslində ağ deyil",
+  "palette": [[30, 70, 110], [190, 225, 245]],
+  "scenes": [
+    {"text": "Qütb ayısı əslində ağ deyil!", "emoji": ["🐻‍❄️", "❌"], "big": "AĞ DEYİL!", "query": "polar bear walking snow"},
+    {"text": "Bəs onda niyə ağ görünür? Çünki onun tükləri rəngsiz və şəffafdır.", "emoji": ["🤔", "🐻‍❄️"], "big": "ŞƏFFAF TÜK", "query": "polar bear fur"},
+    {"text": "Qar kimi, bu tüklər də işığı səpələyir və ona görə ağ görünür.", "emoji": ["❄️", "☀️"], "big": "QAR KİMİ", "query": "polar bear ice"},
+    {"text": "Tüklərin altındakı dərisi isə qapqaradır və Günəşin istisini yaxşı udur.", "emoji": ["🖤", "☀️"], "big": "QARA DƏRİ", "query": "polar bear face"},
+    {"text": "Uzun tüklərinin içi boşdur. Bəzi zooparklarda orada yosun bitib və ayılar yaşıllaşıb!", "emoji": ["💚", "🐻‍❄️"], "big": "YAŞIL AYI?!", "query": "polar bear zoo water"},
+    {"text": "Sənin fikrincə, qütb ayısı hansı rəngdədir: ağ, şəffaf, yoxsa qara? Şərhdə yaz!", "emoji": ["💬", "🤔", "🐻‍❄️"], "big": "SƏNCƏ HANSI?", "query": "polar bear arctic"}
+  ]
+}
